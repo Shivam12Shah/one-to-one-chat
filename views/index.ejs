@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+
+  <div class="main w-full h-screen p-10 bg-red-200 flex flex-col gap-2">
+    <div id="msgBox" class="messageboxc flex flex-col gap-2 overflow-y-scroll w-full h-[90%] pb-10 scroll-none px-5">
+      <!-- <div class="left bg-red-400 max-w px-3 py-1 rounded-md">
+        reciver
+      </div>
+      <div class="right  bg-red-400 max-w px-3 py-1 rounded-md ml-auto">
+        sender
+      </div> -->
+
+    </div>
+    <div class="inputtags w-full flex gap-2 flex">
+      <input class="rounded-md w-[90%]" type="text">
+      <button class="btn px-9 bg-green-800 rounded-md py-2 text-white">Send</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    var sendMessage = document.querySelector("input")
+    var msgBox = document.querySelector("#msgBox")
+
+
+    document.querySelector(".btn").addEventListener("click", () => {
+      senderMessage();
+    })
+
+    function senderMessage() {
+      var msg = sendMessage.value;
+      var template = `<div class="right  bg-red-400 max-w px-3 py-1 rounded-md ml-auto">
+          ${msg}
+        </div>`
+        socket.emit("senderMessage", msg)
+
+        msgBox.innerHTML += template
+        sendMessage.value = ''
+    }
+
+
+
+
+    socket.on("reciverMessage", msg => {
+      reciverMessage(msg);
+    })
+
+
+    function reciverMessage(msg){
+      var template = `<div class="left bg-red-400 max-w mr-auto px-3 py-1 rounded-md">
+        ${msg}
+      </div>`
+      msgBox.innerHTML += template
+    }
+  </script>
+</body>
+
+</html>
